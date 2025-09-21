@@ -1,0 +1,488 @@
+<style>.close{
+        color:red;}</style>
+<?php $setting=$this->db->select('*')->from('ws_setting')->get()->result();
+foreach ($setting as $transactiontype) {
+    $transactiontype->payment_type;
+}
+
+
+$bank=$this->db->select('*')->from('bank_info')->get()->result();
+
+?>
+<div><input type="hidden" name="sesval" id="pas_ses_id" value="<?php echo $this->session->userdata('id_no'); ?>"></div>
+<div class="container">
+<!--      <div id="outputPreviewm" class="alert hide modal-title" role="alert" >-->
+<!--                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+<!--                </div>-->
+
+   <?php echo form_open('website/search/checkout', array('class'=>'row', 'id'=>'checkoutFrms')); ?>
+    <div class="col-sm-7">
+
+<div id="ps_inf">
+
+
+  <div class="tab-content">
+
+    <div id="home" class="tab-pane  active">
+           <div class="journey-details">
+
+            <h4><?php echo 'Passenger Details'; ?></h4>
+               <table class="table">
+                   <tr>
+                       <th><?php echo display('firstname'); ?></th>
+                       <td><?php echo (!empty($firstname)?$firstname:null) ?></td>
+                   </tr>
+                   <tr>
+                       <th><?php echo display('lastname'); ?></th>
+                       <td><?php echo (!empty($lastname)?$lastname:null) ?></td>
+                   </tr>
+                   <tr>
+                       <th><?php echo display('email'); ?></th>
+                       <td><?php echo (!empty($email)?$email:null) ?></td>
+                   </tr>
+                   <tr>
+                       <th><?php echo display('address'); ?></th>
+                       <td><?php echo (!empty($address)?$address:null) ?></td>
+                   </tr>
+               </table>
+
+        </div>
+        <div class="journey-details">
+
+        <h4><?php echo display('booking_details'); ?></h4>
+
+        <table class="table ">
+            <tr>
+                <th><?php echo display('route'); ?></th>
+                <td><?php echo (!empty($booking->route_name)?$booking->route_name:null) ?></td>
+            </tr>
+            <tr>
+                <th><?php echo display('pickup_location'); ?></th>
+                <td><?php echo (!empty($booking->pickup_trip_location)?$booking->pickup_trip_location:null) ?></td>
+            </tr>
+            <tr>
+                <th><?php echo display('drop_location'); ?></th>
+                <td><?php echo (!empty($booking->drop_trip_location)?$booking->drop_trip_location:null) ?></td>
+            </tr>
+            <tr>
+                <th><?php echo display('request_facilities'); ?></th>
+                <td><?php echo (!empty($booking->request_facilities)?$booking->request_facilities:null) ?></td>
+            </tr>
+            <tr>
+                <th><?php echo display('booking_date'); ?></th>
+                <td><?php echo (!empty($booking->booking_date)?$booking->booking_date:null) ?></td>
+            </tr>
+        </table>
+
+
+        </div>
+    </div>
+
+
+  </div>
+
+    </div>
+
+    </div>
+    <div class="col-sm-5">
+        <a style="background-color:#0b2a5b;color:white;text-decoration: none;" href="<?php echo base_url('website/website/how_to_pay') ?>"  class="btn btn-block"  onclick="window.open(this.href, '_blank'); return false;"><h4 style="color:white"><?php echo display('how_to_pay');?></h4> </a>
+        <br>
+        <br>
+
+        <div class="pament-details">
+
+          <span>
+            <input type="checkbox" name="tandc" id="tandc" onChange="function activedisable(){
+             var checkBox = document.getElementById('tandc');
+    if (checkBox.checked == true){
+       $('#paypal_id').prop('disabled', false);
+            $('#cash_id').prop('disabled', false);
+          $('#bank_id').prop('disabled', false);
+           $('#payu_id').prop('disabled', false);
+    } else {
+       $('#paypal_id').prop('disabled', true);
+            $('#cash_id').prop('disabled', true);
+          $('#bank_id').prop('disabled', true);
+           $('#payu_id').prop('disabled', true);
+    }
+           };activedisable()">
+                <a style="color:red;text-decoration: none;" href="<?php echo base_url('website/website/term_and_condition') ?>"  class=""  onclick="window.open(this.href, '_blank'); return false;"><?php echo display('term_n_condition'); ?></a>
+             </span>
+            <div style="margin-top:20px">
+                <input type="hidden" name="typepame" id="paytype" value="">
+
+                <button type="button" id="paypal_id" class="btn btn-block btn-primary" data-bs-toggle="modal" data-bs-target="#paypal_modal"  disabled=""><?php echo display('paypal') ?> </button>
+
+                <button type="button" id="cash_id" class="btn btn-block btn-primary"  data-bs-toggle="modal" data-bs-target="#cash_modal" disabled=""><?php echo display('cash') ?> </button>
+
+                <button type="button" id="bank_id" class="btn btn-block btn-primary" data-bs-toggle="modal" data-bs-target="#bank_modal" disabled=""><?php echo display('bank_transaction') ?> </button>
+
+            </div>
+
+        </div>
+    </div>
+<?php echo form_close(); ?>
+
+    <!-- paypal modal start -->
+    <div class="modal fade" id="paypal_modal" tabindex="-1" role="dialog" style="margin:100px;">
+    <div class="modal-md" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" onclick="function closepaypalmodal(){
+                    document.getElementById('paypal_modal').style.display = 'none';};closepaypalmodal()"><span aria-hidden="true" style="color:red">&times;</span></button>
+
+                <div id="outputPreviewpaypal" class="alert hide modal-title" role="alert" >
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            </div>
+
+            <div class="modal-body">
+
+               <?php echo form_open('website/paypal/buy/'.$booking_id, array('class'=>'row', 'id'=>'checkoutFrm11')); ?>
+            <table class="table table table-bordered table-striped">
+                <tbody class="itemNumber">
+                    <tr>
+                        <td class="text-right"><?php echo display('seats'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->seat_numbers)?$booking->seat_numbers:0) ?></th>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><?php echo display('prices'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?($booking->price/$booking->total_seat):0) ?></th>
+                        <input type="hidden" name="passenger_id_no" value="<?php echo $booking->tkt_passenger_id_no ?>">
+                        <input type="hidden" name="booking_id_no" value="<?php echo $booking->id_no; ?>">
+                    </tr>
+                    <tr>
+                   <input name="firstname" class="form-control" type="hidden" id="names" value="">
+                    <input name="lastname" class="form-control" type="hidden"  value="" id="lastnames_id">
+                    <input type="hidden" name="phone" value="" id="phones_id"  >
+                    <input type="hidden" name="email"  id="emails_id" >
+                    <input type="hidden" name="password"  id="passwords_id" value="" required="required">
+                    <input type="hidden" name="address_line_1" id="addresss_id" class="form-control" >
+                      <input type="hidden" name="p_nid" id="p_nidp" class="form-control" >
+                    </tr>
+                    <tr>
+                     <td class="text-right"><?php echo display('child_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->child*$routePrice->children_price; ?></th>
+                                        </tr>
+                                         <tr>
+                                            <td class="text-right"><?php echo display('adult_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->adult*$routePrice->price; ?></th>
+                                        </tr>
+                                         <tr>
+                                            <td class="text-right"><?php echo display('special_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->special*$routePrice->special_price; ?></th>
+                                        </tr>
+            <tr>
+               <td class="text-right"><?php echo display('total'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?$booking->price:0) ?></th>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><?php echo display('discount'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->discount)?$booking->discount:0) ?></th>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><b><?php echo display('grand_total'); ?></b></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?($booking->price-$booking->discount):0) ?></th>
+                    </tr>
+                </tbody>
+            </table>
+              <button class="btn btn-block btn-primary" id="paypal"><?php echo display('paypal_payment_paynow') ?></button>
+              <?php echo form_close() ?>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+    <!-- paypal modal end -->
+
+    <!-- pay u Modal start -->
+ <div class="modal fade" id="payu_modal" tabindex="-1" role="dialog" style="margin:100px;">
+    <div class="modal-md" role="document">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <button type="button" class="close" onclick="function closepaypalmodal(){
+                    document.getElementById('payu_modal').style.display = 'none';};closepaypalmodal()"><span aria-hidden="true" style="color:#ba0000">&times;</span></button>
+
+                <div id="outputPreviewpaypal" class="alert hide modal-title" role="alert" >
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            </div>
+
+            <div class="modal-body">
+
+               <?php echo form_open('website/payu/payucheck/'.$booking_id, array('class'=>'row', 'id'=>'checkoutFrm12')); ?>
+            <table class="table table table-bordered table-striped">
+                <tbody class="itemNumber">
+                    <tr>
+                        <td class="text-right"><?php echo display('seats'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->seat_numbers)?$booking->seat_numbers:0) ?></th>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><?php echo display('prices'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?($booking->price/$booking->total_seat):0) ?></th>
+                        <input type="hidden" name="passenger_id_no" value="<?php echo $booking->tkt_passenger_id_no ?>">
+                        <input type="hidden" name="booking_id_no" value="<?php echo $booking->id_no; ?>">
+                    </tr>
+                    <tr>
+                   <input name="firstname" class="form-control" type="hidden" id="pfnames" value="<?php echo $firstname;?>">
+                    <input name="lastname" class="form-control" type="hidden"  value="<?php echo $lastname;?>" id="lastnamep_id">
+                    <input type="hidden" name="email"  id="emails_id" value="<?php echo $email;?>">
+                    <input type="hidden" name="mobile" id="mobile" class="form-control" value="<?php echo $mobile;?>">
+
+                     <input type="hidden" name="address" id="address" class="form-control" value="<?php echo $address;?>">
+                     <input type="hidden" name="ticketinfo" id="ticketinfo" class="form-control" value="Buy ticket by Payu Payment">
+                     <input type="hidden" name="amount" id="amnt" class="form-control" value="<?php echo (!empty($booking->price)?($booking->price-$booking->discount):0) ?>">
+                    </tr>
+                    <tr>
+                     <td class="text-right"><?php echo display('child_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->child*$routePrice->children_price; ?></th>
+                                        </tr>
+                                         <tr>
+                                            <td class="text-right"><?php echo display('adult_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->adult*$routePrice->price; ?></th>
+                                        </tr>
+                                         <tr>
+                                            <td class="text-right"><?php echo display('special_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->special*$routePrice->special_price; ?></th>
+                                        </tr>
+            <tr>
+               <td class="text-right"><?php echo display('total'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?$booking->price:0) ?></th>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><?php echo display('discount'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->discount)?$booking->discount:0) ?></th>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><b><?php echo display('grand_total'); ?></b></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?($booking->price-$booking->discount):0) ?></th>
+                    </tr>
+                </tbody>
+            </table>
+              <button class="btn btn-block btn-primary" id="paypal"><?php echo 'Payu Pay Now'; ?></button>
+              <?php echo form_close() ?>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+    <!-- payu modal end -->
+    <!-- Bank modal start -->
+<!--     <div class="modal fade" id="bank_modal" tabindex="-1" role="dialog" style="margin:100px;">
+    <div class="modal-md" role="document"> -->
+      <div class="modal fade" id="bank_modal" tabindex="-1" role="dialog" style="margin:10px;">
+            <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+<!--             <div class="modal-header">
+                <button type="button" class="close" onclick="function closebankmodal(){
+                    document.getElementById('bank_modal').style.display = 'none';};closebankmodal()"><span aria-hidden="true" style="color:red">&times;</span></button>
+
+                <div id="outputPreview1" class="alert hide modal-title" role="alert" >
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                </div>
+            </div> -->
+
+            <div class="modal-body">
+
+               <?php echo form_open('website/search/bank_booking', array('class'=>'row', 'id'=>'check_bank_form')); ?>
+            <table class="table table table-bordered table-striped">
+                <tbody class="itemNumber">
+                    <tr>
+                        <td class="text-right"><?php echo display('seats'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->seat_numbers)?$booking->seat_numbers:0);?></th>
+                    </tr>
+
+                    <tr>
+                        <td class="text-right"><?php echo display('prices'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?($booking->price/$booking->total_seat):0) ?></th>
+                        <input type="hidden" name="passenger_id_no" value="<?php echo $booking->tkt_passenger_id_no ?>">
+                        <input type="hidden" name="booking_id_no" value="<?php echo $booking->id_no; ?>">
+                    </tr>
+
+                  <tr>
+                     <td class="text-right"><?php echo display('child_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->child*$routePrice->children_price; ?></th>
+                                        </tr>
+                                         <tr>
+                                            <td class="text-right"><?php echo display('adult_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->adult*$routePrice->price; ?></th>
+                                        </tr>
+                                         <tr>
+                                            <td class="text-right"><?php echo display('special_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->special*$routePrice->special_price; ?></th>
+                                        </tr>
+                    <tr>
+                        <td class="text-right"><?php echo display('total'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?$booking->price:0) ?></th>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><?php echo display('discount'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->discount)?$booking->discount:0) ?></th>
+                    </tr>
+                     <tr>
+                        <td class="text-right"><?php echo display('bank_charge'); ?></td>
+                        <th class="text-right"><?php echo (!empty($b_commission)?$b_commission:0).'('.$commission_per.'%'.')';?></th>
+
+                    </tr>
+                    <tr>
+                        <td class="text-right"><b><?php echo display('grand_total'); ?></b></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?($booking->price-$booking->discount+$b_commission):0) ?><input type="hidden" name="amount" value="<?php echo (!empty($booking->price)?($booking->price-$booking->discount):0) ?>"></th>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="form-group row">
+                        <label for="bank_id" class="col-sm-4 col-form-label text-right"><?php echo display('select_bank_name'); ?> *</label>
+                        <div class="col-sm-6">
+
+                         <?php
+                         
+
+                         // print_r($bank);
+                         ?>
+                           <select name="bank_id" class="form-control" required>
+                               <option value="">Select Bank</option>
+                               <?php foreach ($bank as $b) {?>
+                                   <option value="<?php echo $b->id;?>"><?php echo $b->bank_name;?></option>
+                               <?php } ?>
+                           </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="trip_route_id" class="col-sm-4 col-form-label text-right"><?php echo display('enter_transaction_id'); ?>*</label>
+                        <div class="col-sm-6">
+                            <input type="text" name="tran_num" class="form-control" placeholder="Transaction Id" required>
+                        </div>
+                    </div>
+             <button class="btn btn-block btn-primary"><?php echo display('confirm_booking') ?></button>
+              <?php echo form_close() ?>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+    <!-- Bank modal end -->
+
+    <!-- Cash Modal start -->
+<div class="modal fade" id="cash_modal" tabindex="-1" role="dialog" style="margin:10px;">
+            <div class="modal-dialog modal-lg">
+
+        <div class="modal-content">
+
+<!--            <div class="modal-header">-->
+<!--                <button type="button" class="close" onclick="function closecashmodal(){-->
+<!--                    document.getElementById('cash_modal').style.display = 'none';};closecashmodal()"><span aria-hidden="true" style="color:red">&times;</span></button>-->
+<!---->
+<!--                <div id="outputPreview2" class="alert hide modal-title" role="alert" >-->
+<!--                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>-->
+<!--                </div>-->
+<!--            </div>-->
+
+            <div class="modal-body">
+
+               <?php echo form_open('website/paypal/paymentlocal', array('class'=>'row', 'id'=>'check_cash_formss')); ?>
+            <table class="table table table-bordered table-striped">
+                <tbody class="itemNumber">
+                    <tr>
+                        <td class="text-right"><?php echo display('seats'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->seat_numbers)?$booking->seat_numbers:0) ?></th>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><?php echo display('prices'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?($booking->price/$booking->total_seat):0) ?></th>
+                        <input type="hidden" name="passenger_id_no" value="<?php echo $booking->tkt_passenger_id_no ?>">
+                        <input type="hidden" name="booking_id_no" value="<?php echo $booking->id_no; ?>">
+                    </tr>
+                    <tr>
+                   <input name="firstname" class="form-control" type="hidden" id="names_cash" value="<?php echo $firstname; ?>
+                   ">
+                    <input name="lastname" class="form-control" type="hidden"  value="<?php echo $lastname; ?>" id="lastnames_cash_id">
+                    <input type="hidden" name="phone" value="<?php echo $mobile; ?>" id="phones_cash_id"  >
+                    <input type="hidden" name="email"  id="emails_cash_id" value="<?php echo $email; ?>">
+<!--                    <input type="hidden" name="password"  id="passwords_cash_id" value="--><?php //echo $firstname; ?><!--" required="required">-->
+                    <input type="hidden" name="address_line_1" id="addresss_cash_id" class="form-control" value="<?php echo $address; ?>" >
+<!--                     <input type="hidden" name="p_nid" id="p_nidc" class="form-control" value="--><?php //echo $firstname; ?><!--" >-->
+                    </tr>
+                    <tr>
+                     <td class="text-right"><?php echo display('child_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->child*$routePrice->children_price; ?></th>
+                                        </tr>
+                                         <tr>
+                                            <td class="text-right"><?php echo display('adult_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->adult*$routePrice->price; ?></th>
+                                        </tr>
+                                         <tr>
+                                            <td class="text-right"><?php echo display('special_price'); ?></td>
+                                            <th class="text-right"><?php echo $booking->special*$routePrice->special_price; ?></th>
+                                        </tr>
+                    <tr>
+                        <td class="text-right"><?php echo display('total'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?$booking->price:0) ?></th>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><?php echo display('discount'); ?></td>
+                        <th class="text-right"><?php echo (!empty($booking->discount)?$booking->discount:0) ?></th>
+                    </tr>
+                    <tr>
+                        <td class="text-right"><b><?php echo display('grand_total'); ?></b></td>
+                        <th class="text-right"><?php echo (!empty($booking->price)?($booking->price-$booking->discount):0) ?></th>
+                    </tr>
+                </tbody>
+            </table>
+
+          <button class="btn btn-block btn-primary" type="submit" id="local"><?php echo display('book_for_one_hour') ?></button>
+              <?php echo form_close() ?>
+            </div>
+
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div>
+    <!-- cash Modal End -->
+</div>
+
+<!-- bank js -->
+<script type="text/javascript">
+    $(document).ready(function(){
+
+        $("#tandc").attr("checked","true").trigger('change');
+
+        var checkoutbanform   = $("#check_bank_form");
+        var outputPreview1 = $('#outputPreview1');
+
+        checkoutbanform.on('submit', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                method: checkoutbanform.attr('method'),
+                url   : checkoutbanform.attr('action'),
+                data  : checkoutbanform.serialize(),
+                dataType: 'json',
+                success: function(data)
+                {
+                    if (data.status == true)
+                    {
+                        outputPreview1.removeClass("hide").removeClass("alert-danger").addClass('alert-success').html(data.success);
+
+                        setInterval(function(){
+                            window.location.href = '<?= base_url() ?>'+'website/paypal/bank_info/'+data.booking_id_no;
+
+                        }, 1000);
+                    } else {
+                        outputPreview1.removeClass("hide").removeClass("alert-success").addClass('alert-danger').html(data.exception);
+                    }
+
+                },
+                error: function()
+                {
+                    alert('failed...');
+                }
+            });
+        });
+
+    });
+</script>
+<!-- cash payment -->
+
